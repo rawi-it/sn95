@@ -12,7 +12,7 @@
       font-family:"Tahoma",sans-serif; color:#fff;
     }
     table{ border-collapse:collapse; width:95%; max-width:1000px; height:95%; table-layout:fixed; }
-    td{ text-align:center; vertical-align:middle; width:33.33%; /* لا حدود */ }
+    td{ text-align:center; vertical-align:middle; width:33.33%; } /* الحدود مخفية */
     img{ height:70px; max-width:100%; }
     .gold-box{
       background:var(--gold); border:3px solid var(--white); border-radius:12px;
@@ -111,11 +111,12 @@
     <tr>
       <td class="footer-text">By:Rawiah itMKH</td>
       <td><img src="images/itlogo.png" alt="itlogo"></td>
-      <td><span class="counter" id="visitorCount">الزوار: —</span></td>
+      <td><span class="counter" id="visitorCount">👥 عدد الزوار: —</span></td>
     </tr>
   </table>
 
   <script>
+    /* ========================= الاختبار ========================= */
     const vStart=document.getElementById('view-start');
     const vQuiz=document.getElementById('view-quiz');
     const vResult=document.getElementById('view-result');
@@ -140,81 +141,7 @@
     ];
     function shuffle(arr){ return arr.slice().sort(()=>Math.random()-0.5); }
     let questions=[],current=0,nameVal="",picks=[],score=0;
+
     function initQuiz(){
       const shuffledQs=shuffle(baseQuestions);
-      questions=shuffledQs.map(q=>({text:q.text,correct:q.correct,options:shuffle([q.correct,...q.distractors])}));
-      current=0;score=0;picks=new Array(questions.length).fill(null);
-    }
-    function show(view){
-      vStart.style.display=(view==='start')?'block':'none';
-      vQuiz.style.display=(view==='quiz')?'block':'none';
-      vResult.style.display=(view==='result')?'block':'none';
-    }
-    function updateProgress(){
-      const pct=(current/(questions.length-1))*100;
-      progress.style.width=pct+"%";
-    }
-    function renderQuestion(){
-      const q=questions[current];
-      qText.textContent=q.text;
-      optionsWrap.innerHTML="";
-      q.options.forEach(val=>{
-        const opt=document.createElement('div');
-        opt.className='opt'; opt.textContent=val;
-        if(picks[current]===val) opt.classList.add('selected');
-        opt.onclick=()=>{
-          picks[current]=val;
-          [...optionsWrap.children].forEach(c=>c.classList.remove('selected'));
-          opt.classList.add('selected');
-        };
-        optionsWrap.appendChild(opt);
-      });
-      btnPrev.disabled=current===0;
-      btnNext.textContent=(current===questions.length-1)?"إنهاء":"التالي";
-      updateProgress();
-    }
-    function calcScore(){
-      let s=0; for(let i=0;i<questions.length;i++){ if(picks[i]===questions[i].correct) s++; }
-      return s;
-    }
-    btnStart.onclick=()=>{
-      nameVal=usernameInput.value.trim();
-      if(!nameVal){ alert("فضلاً اكتب اسمك أولاً"); return; }
-      initQuiz(); show('quiz'); renderQuestion();
-    };
-    btnPrev.onclick=()=>{ if(current>0){ current--; renderQuestion(); } };
-    btnNext.onclick=()=>{
-      if(picks[current]===null){ alert("فضلاً اختر إجابة قبل الانتقال."); return; }
-      if(current===questions.length-1){
-        score=calcScore();
-        const pct=Math.round(score/questions.length*100);
-        rName.textContent=nameVal;
-        rScore.textContent=pct+"%";
-        progress.style.width="100%";
-        let desc="";
-        if(pct>=90) desc="🎉 رائع! وطنيتك ومعرفتك بالتاريخ بالأرقام مشرفة 👏";
-        else if(pct>=60) desc="📚 جيد جدًا! معلوماتك الوطنية قوية، زدها بالاطلاع أكثر 🤝";
-        else if(pct>=30) desc="🔍 متوسط… تحتاج تقرأ وتتعرف أكثر على أرقام الوطن 🇸🇦";
-        else desc="⚠️ راجع نفسك! وطنك يستحق أن تعرف تاريخه ومنجزاته بالأرقام 💚";
-        rDesc.textContent=desc;
-        const url="https://rawi-it.github.io/sn95/";
-        const msg=`أنا ${nameVal} حققت ${pct}% 🎉\nفي اختبار أرقام اليوم الوطني 🇸🇦\nجاهز تتحداني؟ 👇\n${url}`;
-        shareWA.href=`https://wa.me/?text=${encodeURIComponent(msg)}`;
-        shareTG.href=`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(msg)}`;
-        show('result');
-        return;
-      }
-      current++; renderQuestion();
-    };
-    btnRetry.onclick=()=>{ initQuiz(); usernameInput.value=""; show('start'); };
-    show('start');
-
-    // 🔹 عداد الزوار باستخدام CountAPI
-    fetch("https://api.countapi.xyz/hit/rawiah-sn95/visits")
-      .then(res=>res.json())
-      .then(data=>{
-        document.getElementById("visitorCount").textContent="الزوار: "+data.value;
-      });
-  </script>
-</body>
-</html>
+      questions=s
