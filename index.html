@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>اختبر نفسك في أرقام اليوم الوطني</title>
+  <style>
+    :root{ --bg:#003439; --gold:#886C35; --white:#fff; }
+    body{
+      margin:0; padding:0; background:var(--bg);
+      display:flex; justify-content:center; align-items:center; height:100vh;
+      font-family:"Tahoma",sans-serif; color:#fff;
+    }
+    table{ border-collapse:collapse; width:95%; max-width:1000px; height:95%; table-layout:fixed; }
+    td{ border:2px solid var(--white); text-align:center; vertical-align:middle; width:33.33%; }
+    img{ height:70px; max-width:100%; }
+    .gold-box{
+      background:var(--gold); border:3px solid var(--white); border-radius:12px;
+      color:#fff; padding:20px; box-sizing:border-box; width:100%; max-width:720px; margin:auto;
+    }
+    .page-title{ font-size:22px; font-weight:bold; text-align:center; margin:0 0 15px; }
+    .form-row{ display:flex; gap:10px; align-items:center; justify-content:center; flex-wrap:wrap; }
+    .input{
+      background:rgba(0,0,0,.15); border:2px solid var(--white); border-radius:10px; color:#fff;
+      padding:10px 14px; font-size:16px; outline:none; min-width:240px;
+    }
+    .btn{
+      border:none; border-radius:12px; padding:10px 16px; font-size:16px; cursor:pointer;
+      color:#003439; background:#fff; font-weight:bold;
+    }
+    .btn[disabled]{ opacity:.5; cursor:not-allowed; }
+    .btn-ghost{ background:transparent; color:#fff; border:2px solid #fff; }
+    .q-text{ font-size:18px; font-weight:bold; margin:8px 0 14px; text-align:center; }
+    .options{ display:grid; gap:10px; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); }
+    .opt{
+      background:rgba(0,0,0,.15); border:2px solid #fff; border-radius:12px; padding:10px; text-align:center; cursor:pointer;
+      user-select:none;
+    }
+    .opt.selected{ outline:3px solid #fff; background:rgba(0,0,0,.25); }
+    .nav{ display:flex; justify-content:space-between; align-items:center; gap:8px; margin-top:14px; flex-wrap:wrap; }
+    .progress-bar{ flex:1; height:6px; background:rgba(255,255,255,.3); border-radius:4px; margin:0 8px; position:relative; }
+    .progress-fill{ height:100%; background:#fff; border-radius:4px; width:0%; transition:width .25s ease; }
+    .result{ text-align:center; line-height:1.8; font-size:18px; }
+    .score{ font-size:28px; font-weight:bold; margin-top:6px; }
+    .desc{ margin:10px 0; font-size:16px; }
+    .share-buttons{ margin-top:16px; display:flex; justify-content:center; gap:10px; flex-wrap:wrap; }
+    .share-buttons a{
+      text-decoration:none; background:#fff; color:#003439; padding:8px 14px;
+      border-radius:10px; font-size:14px; font-weight:bold;
+    }
+    .footer-text{ font-size:14px; font-weight:bold; color:#fff; text-align:right; padding-right:10px; white-space:nowrap; }
+    .counter{ font-size:14px; font-weight:bold; }
+  </style>
+</head>
+<body>
+  <table>
+    <!-- الصف الأول -->
+    <tr>
+      <td style="text-align:right;"><img src="images/nd95logo.png" alt="nd95logo"></td>
+      <td></td>
+      <td style="text-align:left;"><img src="images/moelogo.png" alt="moelogo"></td>
+    </tr>
+
+    <!-- الصف الثاني (مدمج) -->
+    <tr>
+      <td colspan="3">
+        <div class="gold-box" id="app">
+          <!-- واجهة 1 -->
+          <div id="view-start">
+            <h1 class="page-title">اختبر نفسك في أرقام اليوم الوطني</h1>
+            <div class="form-row">
+              <input id="username" class="input" type="text" placeholder="اكتب اسمك هنا">
+              <button class="btn" id="btnStart">ابدأ الاختبار</button>
+            </div>
+          </div>
+
+          <!-- واجهة 2 -->
+          <div id="view-quiz" style="display:none;">
+            <div class="q-text" id="qText"></div>
+            <div class="options" id="options"></div>
+            <div class="nav">
+              <button class="btn btn-ghost" id="btnPrev">السابق</button>
+              <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+              <button class="btn" id="btnNext">التالي</button>
+            </div>
+          </div>
+
+          <!-- واجهة 3 -->
+          <div id="view-result" style="display:none;">
+            <h2 class="page-title">النتيجة</h2>
+            <div class="result">
+              <div id="rName"></div>
+              <div>حققت:</div>
+              <div class="score" id="rScore">0%</div>
+              <div class="desc" id="rDesc"></div>
+              <div class="subtext">شارك نتيجتك وتحدى أصدقائك… من يعرف أرقام الوطن أكثر؟</div>
+              <div class="share-buttons">
+                <a id="shareWA" target="_blank">شارك على واتساب</a>
+                <a id="shareTG" target="_blank">شارك على تليجرام</a>
+              </div>
+              <div style="margin-top:12px;">
+                <button class="btn btn-ghost" id="btnRetry">إعادة المحاولة</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </td>
+    </tr>
+
+    <!-- الصف الثالث -->
+    <tr>
+      <td class="footer-text">By:Rawiah itMKH</td>
+      <td><img src="images/itlogo.png" alt="itlogo"></td>
+      <td><span class="counter">الزوار: —</span></td>
+    </tr>
+  </table>
+
+  <script>
+    const vStart=document.getElementById('view-start');
+    const vQuiz=document.getElementById('view-quiz');
+    const vResult=document.getElementById('view-result');
+    const usernameInput=document.getElementById('username');
+    const btnStart=document.getElementById('btnStart');
+    const btnPrev=document.getElementById('btnPrev');
+    const btnNext=document.getElementById('btnNext');
+    const qText=document.getElementById('qText');
+    const optionsWrap=document.getElementById('options');
+    const progress=document.getElementById('progress');
+    const rName=document.getElementById('rName');
+    const rScore=document.getElementById('rScore');
+    const rDesc=document.getElementById('rDesc');
+    const btnRetry=document.getElementById('btnRetry');
+    const shareWA=document.getElementById('shareWA');
+    const shareTG=document.getElementById('shareTG');
+
+    const baseQuestions=[
+      { text:"عدد الأيام الوطنية في عهد الملك عبدالعزيز", correct:21, distractors:[17,19,23] },
+      { text:"عدد الأيام الوطنية في عهد الملك سعود", correct:11, distractors:[9,12,14] },
+      { text:"عدد الأيام الوطنية في عهد الملك فيصل", correct:11, distractors:[8,10,13] }
+    ];
+    function shuffle(arr){ return arr.slice().sort(()=>Math.random()-0.5); }
+    let questions=[],current=0,nameVal="",picks=[],score=0;
+    function initQuiz(){
+      const shuffledQs=shuffle(baseQuestions);
+      questions=shuffledQs.map(q=>({text:q.text,correct:q.correct,options:shuffle([q.correct,...q.distractors])}));
+      current=0;score=0;picks=new Array(questions.length).fill(null);
+    }
+    function show(view){
+      vStart.style.display=(view==='start')?'block':'none';
+      vQuiz.style.display=(view==='quiz')?'block':'none';
+      vResult.style.display=(view==='result')?'block':'none';
+    }
+    function updateProgress(){
+      const pct=(current/(questions.length-1))*100;
+      progress.style.width=pct+"%";
+    }
+    function renderQuestion(){
+      const q=questions[current];
+      qText.textContent=q.text;
+      optionsWrap.innerHTML="";
+      q.options.forEach(val=>{
+        const opt=document.createElement('div');
+        opt.className='opt'; opt.textContent=val;
+        if(picks[current]===val) opt.classList.add('selected');
+        opt.onclick=()=>{
+          picks[current]=val;
+          [...optionsWrap.children].forEach(c=>c.classList.remove('selected'));
+          opt.classList.add('selected');
+        };
+        optionsWrap.appendChild(opt);
+      });
+      btnPrev.disabled=current===0;
+      btnNext.textContent=(current===questions.length-1)?"إنهاء":"التالي";
+      updateProgress();
+    }
+    function calcScore(){
+      let s=0; for(let i=0;i<questions.length;i++){ if(picks[i]===questions[i].correct) s++; }
+      return s;
+    }
+    btnStart.onclick=()=>{
+      nameVal=usernameInput.value.trim();
+      if(!nameVal){ alert("فضلاً اكتب اسمك أولاً"); return; }
+      initQuiz(); show('quiz'); renderQuestion();
+    };
+    btnPrev.onclick=()=>{ if(current>0){ current--; renderQuestion(); } };
+    btnNext.onclick=()=>{
+      if(picks[current]===null){ alert("فضلاً اختر إجابة قبل الانتقال."); return; }
+      if(current===questions.length-1){
+        score=calcScore();
+        const pct=Math.round(score/questions.length*100);
+        rName.textContent=nameVal;
+        rScore.textContent=pct+"%";
+        progress.style.width="100%";
+
+        // الوصف حسب الدرجة
+        let desc="";
+        if(pct>=90) desc="🎉 رائع! وطنيتك ومعرفتك بالتاريخ بالأرقام مشرفة 👏";
+        else if(pct>=60) desc="📚 جيد جدًا! معلوماتك الوطنية قوية، زدها بالاطلاع أكثر 🤝";
+        else if(pct>=30) desc="🔍 متوسط… تحتاج تقرأ وتتعرف أكثر على أرقام الوطن 🇸🇦";
+        else desc="⚠️ راجع نفسك! وطنك يستحق أن تعرف تاريخه ومنجزاته بالأرقام 💚";
+        rDesc.textContent=desc;
+
+        // مشاركة
+        const url="[رابط الصفحة]"; // ← عدليه بعد الرفع
+        const msg=`أنا ${nameVal} حققت ${pct}% 🎉\nفي اختبار أرقام اليوم الوطني 🇸🇦\nجاهز تتحداني؟ 👇\n${url}`;
+        shareWA.href=`https://wa.me/?text=${encodeURIComponent(msg)}`;
+        shareTG.href=`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(msg)}`;
+
+        show('result');
+        return;
+      }
+      current++; renderQuestion();
+    };
+    btnRetry.onclick=()=>{ initQuiz(); usernameInput.value=""; show('start'); };
+    show('start');
+  </script>
+</body>
+</html>
