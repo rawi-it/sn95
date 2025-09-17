@@ -12,7 +12,7 @@
       font-family:"Tahoma",sans-serif; color:#fff;
     }
     table{ border-collapse:collapse; width:95%; max-width:1000px; height:95%; table-layout:fixed; }
-    td{ border:2px solid var(--white); text-align:center; vertical-align:middle; width:33.33%; }
+    td{ text-align:center; vertical-align:middle; width:33.33%; /* لا حدود */ }
     img{ height:70px; max-width:100%; }
     .gold-box{
       background:var(--gold); border:3px solid var(--white); border-radius:12px;
@@ -111,7 +111,7 @@
     <tr>
       <td class="footer-text">By:Rawiah itMKH</td>
       <td><img src="images/itlogo.png" alt="itlogo"></td>
-      <td><span class="counter">الزوار: —</span></td>
+      <td><span class="counter" id="visitorCount">الزوار: —</span></td>
     </tr>
   </table>
 
@@ -191,21 +191,16 @@
         rName.textContent=nameVal;
         rScore.textContent=pct+"%";
         progress.style.width="100%";
-
-        // الوصف حسب الدرجة
         let desc="";
         if(pct>=90) desc="🎉 رائع! وطنيتك ومعرفتك بالتاريخ بالأرقام مشرفة 👏";
         else if(pct>=60) desc="📚 جيد جدًا! معلوماتك الوطنية قوية، زدها بالاطلاع أكثر 🤝";
         else if(pct>=30) desc="🔍 متوسط… تحتاج تقرأ وتتعرف أكثر على أرقام الوطن 🇸🇦";
         else desc="⚠️ راجع نفسك! وطنك يستحق أن تعرف تاريخه ومنجزاته بالأرقام 💚";
         rDesc.textContent=desc;
-
-        // مشاركة
-        const url="[رابط الصفحة]"; // ← عدليه بعد الرفع
+        const url="https://rawi-it.github.io/sn95/";
         const msg=`أنا ${nameVal} حققت ${pct}% 🎉\nفي اختبار أرقام اليوم الوطني 🇸🇦\nجاهز تتحداني؟ 👇\n${url}`;
         shareWA.href=`https://wa.me/?text=${encodeURIComponent(msg)}`;
         shareTG.href=`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(msg)}`;
-
         show('result');
         return;
       }
@@ -213,6 +208,13 @@
     };
     btnRetry.onclick=()=>{ initQuiz(); usernameInput.value=""; show('start'); };
     show('start');
+
+    // 🔹 عداد الزوار باستخدام CountAPI
+    fetch("https://api.countapi.xyz/hit/rawiah-sn95/visits")
+      .then(res=>res.json())
+      .then(data=>{
+        document.getElementById("visitorCount").textContent="الزوار: "+data.value;
+      });
   </script>
 </body>
 </html>
