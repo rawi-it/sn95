@@ -9,90 +9,78 @@
       --bg:#003439;
       --gold:#886C35;
       --white:#fff;
+      --row-top:80px;
+      --row-mid:500px;
+      --row-bot:80px;
+      --logo-h:70px;
+      --gold-h:480px; /* داخل الصف الثاني */
+      --gold-w:90%;
     }
 
-    html, body { height:100%; margin:0; }
+    html,body{height:100%;margin:0}
     body{
-      background: url("images/ptrn.png") repeat;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      font-family: Tahoma, Arial, sans-serif;
-      color:#fff;
+      background:url("images/ptrn.png") repeat;
+      display:flex;justify-content:center;align-items:center;
+      font-family:Tahoma,Arial,sans-serif;color:var(--white);
     }
 
+    /* المستطيل الرئيسي */
     .canvas{
-      width:1080px;
-      height:660px; /* 80 + 500 + 80 */
-      background: var(--bg);
+      width:1080px; height:calc(var(--row-top) + var(--row-mid) + var(--row-bot));
+      background:var(--bg);
       box-sizing:border-box;
     }
 
-    .grid{
-      width:100%;
-      height:100%;
-      border-collapse: collapse;
-      table-layout: fixed;
+    /* جدول 3×3 بلا حدود (للاستخدام التقديمي) */
+    table.grid{
+      width:100%; height:100%;
+      border-collapse:collapse; table-layout:fixed;
     }
-
-    .grid td{
-      border:none;  /* بدون حدود */
-      vertical-align: middle;
-      text-align:center;
-      padding:8px;
+    table.grid[role="presentation"] td{
+      border:none; padding:8px; text-align:center; vertical-align:middle;
       box-sizing:border-box;
     }
 
-    .row-1{ height:80px; }
-    .row-2{ height:500px; }
-    .row-3{ height:80px; }
+    /* ارتفاع الصفوف */
+    .row-1{ height:var(--row-top); }
+    .row-2{ height:var(--row-mid); }
+    .row-3{ height:var(--row-bot); }
 
-    img.logo{ height:70px; max-width:100%; }
-
-    /* محاذاة خاصة للخلايا */
-    .cell-1{ vertical-align: top; text-align:right; }
-    .cell-3{ vertical-align: top; text-align:left; }
-    .cell-7{ vertical-align: bottom; text-align:right; padding-right:10px; }
-    .cell-8{ vertical-align: bottom; text-align:center; }
-    .cell-9{ vertical-align: bottom; text-align:left; padding-left:10px; }
+    /* الشعارات */
+    .logo{ height:var(--logo-h); max-width:100%; }
+    .cell-1{ text-align:right;  vertical-align:top;  }
+    .cell-3{ text-align:left;   vertical-align:top;  }
+    .cell-7{ text-align:right;  vertical-align:bottom; padding-right:10px; }
+    .cell-8{ text-align:center; vertical-align:bottom; }
+    .cell-9{ text-align:left;   vertical-align:bottom; padding-left:10px; }
 
     .signature{ font-weight:700; font-size:18px; white-space:nowrap; }
 
     /* المربع الذهبي */
     .gold-box{
-      background: var(--gold);
+      background:var(--gold);
       border:3px solid var(--white);
       border-radius:10px;
-      width:90%;
-      height:480px;
-      margin:auto;
-      box-sizing:border-box;
+      width:var(--gold-w);
+      height:var(--gold-h);
+      margin:auto; box-sizing:border-box;
 
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      font-size:28px;
-      font-weight:bold;
-      color:#fff;
+      display:flex; align-items:center; justify-content:center;
+      font-size:28px; font-weight:bold;
     }
 
     /* العداد */
-    .counter{
-      font-size:14px;
-      font-weight:bold;
-      color:#fff;
-      white-space:nowrap;
-    }
+    .counter{ font-size:14px; font-weight:bold; color:#fff; white-space:nowrap; }
   </style>
 </head>
 <body>
   <div class="canvas">
-    <table class="grid">
+    <table class="grid" role="presentation" aria-label="لوحة اختبار أبعاد 3×3">
       <!-- الصف الأول -->
       <tr class="row-1">
-        <td class="cell-1"><img class="logo" src="images/nd95logo.png" alt="nd95logo"></td>
+        <td class="cell-1"><img class="logo" src="images/nd95logo.png" alt="nd95logo" aria-hidden="true"></td>
         <td></td>
-        <td class="cell-3"><img class="logo" src="images/moelogo.png" alt="moelogo"></td>
+        <td class="cell-3"><img class="logo" src="images/moelogo.png" alt="moelogo" aria-hidden="true"></td>
       </tr>
 
       <!-- الصف الثاني -->
@@ -105,30 +93,22 @@
       <!-- الصف الثالث -->
       <tr class="row-3">
         <td class="cell-7"><div class="signature">By:Rawiah itMKH</div></td>
-        <td class="cell-8"><img class="logo" src="images/itlogo.png" alt="itlogo"></td>
-        <td class="cell-9">
-          <span class="counter" id="visitorCount">عدد الزوار: —</span>
-        </td>
+        <td class="cell-8"><img class="logo" src="images/itlogo.png" alt="itlogo" aria-hidden="true"></td>
+        <td class="cell-9"><span class="counter" id="visitorCount">عدد الزوار: —</span></td>
       </tr>
     </table>
   </div>
 
   <script>
-    // عداد الزوار باستخدام CountAPI
+    // أبسط صياغة لعداد CountAPI: /hit ينشئ ويزيد في نفس الوقت
     (function(){
-      const el = document.getElementById("visitorCount");
-      const NS = "rawiah-test"; // namespace خاص بك
-      const KEY = "page-visits";
-      const API = "https://api.countapi.xyz";
-
-      const setText = v => {
-        el.textContent = "عدد الزوار: " + v;
-      };
-
-      fetch(`${API}/hit/${NS}/${KEY}`)
+      const el = document.getElementById('visitorCount');
+      const NS = 'rawi-it-sn95';   // عدّلي إن أردتِ
+      const KEY= 'size-lab';       // مفتاح هذه الصفحة
+      fetch(`https://api.countapi.xyz/hit/${NS}/${KEY}`)
         .then(r => r.json())
-        .then(data => setText(data.value))
-        .catch(() => setText("—"));
+        .then(d => el.textContent = 'عدد الزوار: ' + d.value)
+        .catch(() => el.textContent = 'عدد الزوار: —');
     })();
   </script>
 </body>
