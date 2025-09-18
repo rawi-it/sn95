@@ -6,112 +6,67 @@
   <title>مختبر الأبعاد ثابت</title>
   <style>
     :root{
-      --bg:#003439;
-      --gold:#886C35;
-      --white:#fff;
-      --row-top:80px;
-      --row-mid:500px;
-      --row-bot:80px;
-      --logo-h:70px;
-      --gold-h:480px; /* داخل الصف الثاني */
-      --gold-w:90%;
+      --bg:#003439; --gold:#886C35; --white:#fff;
+      --row-top:80px; --row-mid:500px; --row-bot:80px;
+      --logo-h:70px; --gold-h:480px; --gold-w:90%;
     }
-
     html,body{height:100%;margin:0}
     body{
       background:url("images/ptrn.png") repeat;
       display:flex;justify-content:center;align-items:center;
       font-family:Tahoma,Arial,sans-serif;color:var(--white);
     }
-
-    /* المستطيل الرئيسي */
-    .canvas{
-      width:1080px; height:calc(var(--row-top) + var(--row-mid) + var(--row-bot));
-      background:var(--bg);
-      box-sizing:border-box;
-    }
-
-    /* جدول 3×3 بلا حدود (للاستخدام التقديمي) */
-    table.grid{
-      width:100%; height:100%;
-      border-collapse:collapse; table-layout:fixed;
-    }
-    table.grid[role="presentation"] td{
-      border:none; padding:8px; text-align:center; vertical-align:middle;
-      box-sizing:border-box;
-    }
-
-    /* ارتفاع الصفوف */
-    .row-1{ height:var(--row-top); }
-    .row-2{ height:var(--row-mid); }
-    .row-3{ height:var(--row-bot); }
-
-    /* الشعارات */
-    .logo{ height:var(--logo-h); max-width:100%; }
-    .cell-1{ text-align:right;  vertical-align:top;  }
-    .cell-3{ text-align:left;   vertical-align:top;  }
-    .cell-7{ text-align:right;  vertical-align:bottom; padding-right:10px; }
-    .cell-8{ text-align:center; vertical-align:bottom; }
-    .cell-9{ text-align:left;   vertical-align:bottom; padding-left:10px; }
-
-    .signature{ font-weight:700; font-size:18px; white-space:nowrap; }
-
-    /* المربع الذهبي */
+    .canvas{width:1080px;height:calc(var(--row-top)+var(--row-mid)+var(--row-bot));background:var(--bg);box-sizing:border-box;}
+    table.grid{width:100%;height:100%;border-collapse:collapse;table-layout:fixed;}
+    table.grid[role="presentation"] td{border:none;padding:8px;text-align:center;vertical-align:middle;box-sizing:border-box;}
+    .row-1{height:var(--row-top);} .row-2{height:var(--row-mid);} .row-3{height:var(--row-bot);}
+    .logo{height:var(--logo-h);max-width:100%;}
+    .cell-1{text-align:right;vertical-align:top;} .cell-3{text-align:left;vertical-align:top;}
+    .cell-7{text-align:right;vertical-align:bottom;padding-right:10px;}
+    .cell-8{text-align:center;vertical-align:bottom;}
+    .cell-9{text-align:left;vertical-align:bottom;padding-left:10px;}
+    .signature{font-weight:700;font-size:18px;white-space:nowrap;}
     .gold-box{
-      background:var(--gold);
-      border:3px solid var(--white);
-      border-radius:10px;
-      width:var(--gold-w);
-      height:var(--gold-h);
-      margin:auto; box-sizing:border-box;
-
-      display:flex; align-items:center; justify-content:center;
-      font-size:28px; font-weight:bold;
+      background:var(--gold);border:3px solid var(--white);border-radius:10px;
+      width:var(--gold-w);height:var(--gold-h);margin:auto;box-sizing:border-box;
+      display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:bold;
     }
-
-    /* العداد */
-    .counter{ font-size:14px; font-weight:bold; color:#fff; white-space:nowrap; }
+    .counter{font-size:14px;font-weight:bold;color:#fff;white-space:nowrap;}
   </style>
 </head>
 <body>
   <div class="canvas">
     <table class="grid" role="presentation" aria-label="لوحة اختبار أبعاد 3×3">
-      <!-- الصف الأول -->
       <tr class="row-1">
-        <td class="cell-1"><img class="logo" src="images/nd95logo.png" alt="nd95logo" aria-hidden="true"></td>
+        <td class="cell-1"><img class="logo" src="images/nd95logo.png" alt="nd95logo"></td>
         <td></td>
-        <td class="cell-3"><img class="logo" src="images/moelogo.png" alt="moelogo" aria-hidden="true"></td>
+        <td class="cell-3"><img class="logo" src="images/moelogo.png" alt="moelogo"></td>
       </tr>
-
-      <!-- الصف الثاني -->
       <tr class="row-2">
         <td colspan="3">
           <div class="gold-box">نص تجريبي داخل المربع الذهبي</div>
         </td>
       </tr>
-
-      <!-- الصف الثالث -->
       <tr class="row-3">
         <td class="cell-7"><div class="signature">By:Rawiah itMKH</div></td>
-        <td class="cell-8"><img class="logo" src="images/itlogo.png" alt="itlogo" aria-hidden="true"></td>
+        <td class="cell-8"><img class="logo" src="images/itlogo.png" alt="itlogo"></td>
         <td class="cell-9"><span class="counter" id="visitorCount">عدد الزوار: —</span></td>
       </tr>
     </table>
   </div>
 
   <script>
-    // أبسط صياغة لعداد CountAPI: /hit ينشئ ويزيد في نفس الوقت
+    // عداد الزوار عبر Cloudflare Worker
     (function(){
       const el = document.getElementById('visitorCount');
-      const NS = 'rawi-it-sn95';   // عدّلي إن أردتِ
-      const KEY= 'index';       // مفتاح هذه الصفحة
-      fetch(`https://api.countapi.xyz/hit/${NS}/${KEY}`)
-        .then(r => r.json())
-        .then(d => el.textContent = 'عدد الزوار: ' + d.value)
-        .catch(() => el.textContent = 'عدد الزوار:');
+      const WORKER_URL = 'https://sn95-visitor.alharbi-rawiah.workers.dev/'; // غيّريه إن تغيّر اسمك
+      const setText = v => el.textContent = 'عدد الزوار: ' + v;
+
+      fetch(WORKER_URL, {cache:'no-store', mode:'cors', referrerPolicy:'no-referrer'})
+        .then(r => { if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
+        .then(d => setText(d.value))
+        .catch(() => setText('—'));
     })();
   </script>
 </body>
 </html>
-
-
