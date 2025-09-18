@@ -7,116 +7,163 @@
   <style>
     :root{
       --bg:#003439; --gold:#886C35; --white:#fff;
-      --row-top:80px; --row-mid:500px; --row-bot:80px;
-      --logo-h:70px; --gold-h:480px; --gold-w:90%;
-      --ink:#ffffff; --accent:#ffffff;
-      --option-bg:rgba(255,255,255,.12); --option-bg-hover:rgba(255,255,255,.2);
+      --logo-h:8vh;                    /* ارتفاع الشعارات مرن */
+      --gold-w:90%;                    /* عرض المربع الذهبي */
+      --accent:#fff;                   /* لون الأزرار/التقدم */
     }
-    html,body{height:100%;margin:0}
-    body{
+
+    html,body{
+      height:100%; margin:0;
       background:url("images/ptrn.png") repeat;
-      display:flex;justify-content:center;align-items:center;
-      font-family:Tahoma,Arial,sans-serif;color:var(--white);
+      display:flex; justify-content:center; align-items:center;
+      font-family:Tahoma,Arial,sans-serif; color:var(--white);
+      overflow:hidden;                 /* بدون تمرير */
     }
-    .canvas{width:1080px;height:calc(var(--row-top)+var(--row-mid)+var(--row-bot));background:var(--bg);box-sizing:border-box;}
-    table.grid{width:100%;height:100%;border-collapse:collapse;table-layout:fixed;}
-    table.grid[role="presentation"] td{border:none;padding:8px;text-align:center;vertical-align:middle;box-sizing:border-box;}
-    .row-1{height:var(--row-top)} .row-2{height:var(--row-mid)} .row-3{height:var(--row-bot)}
-    .logo{height:var(--logo-h);max-width:100%}
-    .cell-1{text-align:right;vertical-align:top} .cell-3{text-align:left;vertical-align:top}
-    .cell-7{text-align:right;vertical-align:bottom;padding-right:10px}
-    .cell-8{text-align:center;vertical-align:bottom}
-    .cell-9{text-align:left;vertical-align:bottom;padding-left:10px}
-    .signature{font-weight:700;font-size:18px;white-space:nowrap}
 
+    /* الحاوية الأساسية (المستطيل الداكن) */
+    .canvas{
+      background:var(--bg);
+      box-sizing:border-box;
+      display:grid;
+      grid-template-rows:10vh 1fr 10vh; /* علوي / وسط / سفلي */
+      /* الهوامش حسب الاتجاه */
+      width:80vw; height:100vh;        /* افتراضي (أفقي) */
+    }
+    @media (orientation: portrait){
+      .canvas{ width:100vw; height:80vh; } /* عمودي: هوامش فوق/تحت */
+    }
+
+    /* الصف العلوي والسفلي بشبكة 3 أعمدة */
+    .row-top,.row-bot{
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      align-items:center;
+    }
+    .row-top img,.row-bot img{ height:var(--logo-h); max-width:100%; }
+
+    .cell-1{ text-align:right;  padding:0 10px; }
+    .cell-3{ text-align:left;   padding:0 10px; }
+    .cell-7{ text-align:right;  padding:0 10px; font-weight:700; }
+    .cell-8{ text-align:center; }
+    .cell-9{ text-align:left;   padding:0 10px; font-size:14px; white-space:nowrap; }
+
+    /* المربع الذهبي في الوسط */
+    .middle{ display:flex; justify-content:center; align-items:center; }
     .gold-box{
-      background:var(--gold);border:3px solid var(--white);border-radius:10px;
-      width:var(--gold-w);height:var(--gold-h);margin:auto;box-sizing:border-box;
-      display:flex;align-items:center;justify-content:center;color:var(--ink);padding:18px;
+      background:var(--gold);
+      border:3px solid var(--white);
+      border-radius:12px;
+      width:var(--gold-w); height:100%;
+      margin:auto; box-sizing:border-box;
+      display:flex; flex-direction:column; justify-content:center; align-items:center;
+      padding:12px;
     }
 
+    /* محتوى الاختبار داخل المربع */
     .gold-content{
-      width:100%;height:100%;
-      display:flex;flex-direction:column;justify-content:center;align-items:center;gap:14px;text-align:center;
+      width:100%; height:100%;
+      display:flex; flex-direction:column; justify-content:center; align-items:center;
+      gap:10px; text-align:center;
+      overflow:hidden;                  /* منع التمرير */
+      padding:4px;
+      word-break:break-word; overflow-wrap:anywhere; white-space:normal;
     }
-    .title{font-weight:800;font-size:clamp(22px,6.2vh,38px);line-height:1.2}
+
+    .title{ font-weight:800; font-size:clamp(18px,5.2vh,32px); line-height:1.15; }
+    .subtitle{ font-size:clamp(14px,3.2vh,20px); opacity:.95; }
+
     .input{
-      width:min(520px,90%);height:54px;border:none;border-radius:10px;
-      text-align:center;font-size:clamp(18px,4.5vh,26px);
+      width:min(520px,90%); height:clamp(42px,5.2vh,54px);
+      border:none; border-radius:10px; text-align:center;
+      font-size:clamp(16px,3.8vh,24px);
     }
     .btn{
-      cursor:pointer;border:2px solid var(--accent); color:var(--ink);
-      background:transparent;border-radius:12px;padding:10px 22px;
-      font-weight:800;font-size:clamp(18px,4.2vh,24px);
+      cursor:pointer; border:2px solid var(--accent); color:#fff;
+      background:transparent; border-radius:12px;
+      padding:8px 16px; font-weight:800; 
+      font-size:clamp(15px,3.6vh,22px);
     }
-    .btn:disabled{opacity:.45;cursor:not-allowed}
+    .btn:disabled{ opacity:.45; cursor:not-allowed; }
 
-    .options{width:100%;max-width:760px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .options{
+      width:100%; max-width:760px;
+      display:grid; grid-template-columns:1fr 1fr; gap:8px;
+    }
     .option{
-      background:var(--option-bg);border:2px solid #fff;border-radius:12px;
-      padding:14px 10px;cursor:pointer;user-select:none;
-      font-size:clamp(18px,4.2vh,26px);font-weight:700;
+      background:rgba(255,255,255,.12); border:2px solid #fff; border-radius:12px;
+      padding:10px 8px; cursor:pointer; user-select:none;
+      font-size:clamp(15px,3.6vh,22px); font-weight:700;
     }
-    .option:hover{background:var(--option-bg-hover)}
-    .option.selected{outline:3px solid #fff}
+    .option:hover{ background:rgba(255,255,255,.2); }
+    .option.selected{ outline:3px solid #fff; }
 
-    .nav{width:100%;max-width:760px;display:flex;align-items:center;gap:12px;margin-top:6px}
-    .progress{flex:1;height:10px;border:2px solid var(--white);border-radius:999px;overflow:hidden;background:rgba(255,255,255,.18)}
-    .bar{height:100%;width:0;background:var(--accent);transition:width .25s ease}
+    /* ضيق الارتفاع → عمود واحد */
+    @media (max-height: 740px){
+      .options{ grid-template-columns:1fr; }
+    }
 
-    .score{font-size:clamp(20px,5vh,34px);font-weight:900;line-height:1.4}
-    .desc{font-size:clamp(16px,3.6vh,22px)}
-    .share-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
-    .hr{width:100%;max-width:760px;border:0;border-top:2px solid rgba(255,255,255,.6);margin:6px 0 4px}
+    .nav{ width:100%; max-width:760px; display:flex; align-items:center; gap:10px; margin-top:4px; }
+    .progress{ flex:1; height:8px; border:2px solid var(--white); border-radius:999px; overflow:hidden; background:rgba(255,255,255,.18); }
+    .bar{ height:100%; width:0; background:var(--accent); transition:width .25s ease; }
+
+    .score{ font-size:clamp(18px,4.6vh,30px); font-weight:900; line-height:1.25; }
+    .desc{ font-size:clamp(14px,3vh,20px); line-height:1.35; }
+    .share-row{ display:flex; gap:8px; justify-content:center; flex-wrap:wrap; }
+    .hr{ width:100%; max-width:760px; border:0; border-top:1.5px solid rgba(255,255,255,.65); margin:6px 0 4px; }
   </style>
 </head>
 <body>
   <div class="canvas">
-    <table class="grid" role="presentation" aria-label="لوحة اختبار أبعاد 3×3">
-      <tr class="row-1">
-        <td class="cell-1"><img class="logo" src="images/nd95logo.png" alt="nd95logo"></td>
-        <td></td>
-        <td class="cell-3"><img class="logo" src="images/moelogo.png" alt="moelogo"></td>
-      </tr>
-      <tr class="row-2">
-        <td colspan="3">
-          <div class="gold-box">
-            <div class="gold-content" id="app"><!-- يُحقن هنا --></div>
-          </div>
-        </td>
-      </tr>
-      <tr class="row-3">
-        <td class="cell-7"><div class="signature">By:Rawiah itMKH</div></td>
-        <td class="cell-8"><img class="logo" src="images/itlogo.png" alt="itlogo"></td>
-        <td class="cell-9"><span class="counter" id="visitorCount">عدد الزوار: —</span></td>
-      </tr>
-    </table>
+    <!-- الصف العلوي -->
+    <div class="row-top">
+      <div class="cell-1"><img src="images/nd95logo.png" alt="nd95logo" /></div>
+      <div></div>
+      <div class="cell-3"><img src="images/moelogo.png" alt="moelogo" /></div>
+    </div>
+
+    <!-- الوسط: المربع الذهبي -->
+    <div class="middle">
+      <div class="gold-box">
+        <div class="gold-content" id="app"><!-- يحقن عبر JS --></div>
+      </div>
+    </div>
+
+    <!-- الصف السفلي -->
+    <div class="row-bot">
+      <div class="cell-7">By:Rawiah itMKH</div>
+      <div class="cell-8"><img src="images/itlogo.png" alt="itlogo" /></div>
+      <div class="cell-9" id="visitorCount">عدد الزوار: —</div>
+    </div>
   </div>
 
   <script>
+    /* ===================== منطق الاختبار ===================== */
     (function(){
       const app = document.getElementById('app');
       const pageURL = 'http://bit.ly/sn95';
 
+      /* جميع الأسئلة (إجابة صحيحة + مشتتات) */
       const baseQuestions = [
         { text:'عدد الأيام الوطنية في عهد الملك عبدالعزيز', answer:21, distractors:[17,19,23] },
         { text:'عدد الأيام الوطنية في عهد الملك سعود',    answer:11, distractors:[9,12,13]      },
         { text:'عدد الأيام الوطنية في عهد الملك فيصل',    answer:11, distractors:[8,10,14]      },
-        { text:'عدد الأيام الوطنية في عهد الملك خالد', answer:7, distractors:[6,8,9] },
-        { text:'عدد الأيام الوطنية في عهد الملك فهد', answer:23, distractors:[20,21,22] },
-        { text:'عدد الأيام الوطنية في عهد الملك عبدالله', answer:10, distractors:[8,9,11] },
+
+        { text:'عدد الأيام الوطنية في عهد الملك خالد',    answer:7,  distractors:[6,8,9]        },
+        { text:'عدد الأيام الوطنية في عهد الملك فهد',     answer:23, distractors:[20,21,22]     },
+        { text:'عدد الأيام الوطنية في عهد الملك عبدالله', answer:10, distractors:[8,9,11]       },
         { text:'عدد الأيام الوطنية في عهد الملك سلمان حتى اليوم', answer:11, distractors:[9,10,12] },
-        { text:'في عهد الملك فيصل صدر مرسوم ملكي بجعل 23 سبتمبر يومًا وطنيًا يُحتفل به، بدءا من اليوم الوطني رقم', answer:35, distractors:[30,33,37] },
-        { text:'أقرّ الملك عبدالله، أن يكون اليوم الوطني إجازة رسمية ابتداءً من اليوم الوطني رقم', answer:75, distractors:[70,72,78] },
-        { text:'دشنت أمانة جدة أطول سارية علم في العالم في اليوم الوطني رقم', answer:84, distractors:[80,82,86] },
-        { text:'صادف اليوم الوطني يوم عرفة لأول مرة في اليوم الوطني رقم', answer:85, distractors:[82,83,87] },
-        { text:'اليوم الوطني السعودي يوافق ____ من الميزان', answer:'الأول', distractors:['الثاني','الثالث','الرابع'] },
+
+        { text:'في عهد الملك فيصل صدر مرسوم ملكي بجعل 23 سبتمبر يومًا وطنيًا في اليوم الوطني رقم', answer:35, distractors:[30,33,37] },
+        { text:'في عهد الملك عبدالله أُقرت إجازة رسمية لليوم الوطني ابتداءً من اليوم الوطني رقم',   answer:75, distractors:[70,72,78] },
+        { text:'دشنت أمانة جدة أطول سارية علم في العالم في اليوم الوطني رقم',                       answer:84, distractors:[80,82,86] },
+        { text:'صادف اليوم الوطني يوم عرفة لأول مرة في اليوم الوطني رقم',                             answer:85, distractors:[82,83,87] },
+        { text:'اليوم الوطني السعودي يوافق ____ من الميزان', answer:'الأول', distractors:['الثاني','الثالث','الرابع'] }
       ];
 
       let userName = '';
       let questions = [];
       let index = 0;
-      let picks = [];
+      let picks = []; // اختيار المستخدم لكل سؤال (قيمة الخيار)
 
       const shuffle = (arr)=> arr.map(a=>[Math.random(),a]).sort((a,b)=>a[0]-b[0]).map(a=>a[1]);
 
@@ -125,6 +172,7 @@
         index = 0; picks = new Array(questions.length).fill(null);
       }
 
+      /* واجهة الاسم */
       function renderWelcome(){
         app.innerHTML = `
           <div class="title">اختبر نفسك في أرقام اليوم الوطني</div>
@@ -141,6 +189,7 @@
         nameInput.addEventListener('keydown', e=>{ if(e.key==='Enter') startBtn.click(); });
       }
 
+      /* واجهة السؤال */
       function renderQuestion(){
         const q = questions[index];
         app.innerHTML = `
@@ -157,13 +206,13 @@
         const nextBtn = document.getElementById('next');
         const optsBox = document.getElementById('opts');
 
-        // الخيارات
+        // إنشاء الخيارات
         q.options.forEach(val=>{
           const o = document.createElement('div');
           o.className = 'option';
           o.textContent = val;
           o.onclick = ()=>{
-            picks[index] = val;
+            picks[index] = (typeof q.answer==='number') ? +val : val; // توحيد النوع
             Array.from(optsBox.children).forEach(c=>c.classList.remove('selected'));
             o.classList.add('selected');
             nextBtn.disabled = false;
@@ -171,25 +220,26 @@
           optsBox.appendChild(o);
         });
 
-        // إعادة تحديد سابق إن وجد
+        // إعادة إبراز اختيار سابق إن وجد
         if(picks[index] !== null){
           nextBtn.disabled = false;
-          const at = Array.from(optsBox.children).find(c=> +c.textContent === picks[index]);
+          const at = Array.from(optsBox.children)
+            .find(c => (typeof q.answer==='number' ? +c.textContent : c.textContent) === picks[index]);
           if(at) at.classList.add('selected');
         }
 
-        // "إنهاء" في آخر سؤال
+        // زر “إنهاء” في آخر سؤال
         if(index === questions.length - 1) nextBtn.textContent = 'إنهاء';
 
         prevBtn.disabled = (index===0);
         prevBtn.onclick = ()=>{ if(index>0){ index--; renderQuestion(); updateProgress(); } };
 
         nextBtn.onclick = ()=>{
-          if(picks[index] === null) return;
+          if(picks[index] === null) return; // منع الانتقال بدون اختيار
           if(index < questions.length - 1){
             index++; renderQuestion(); updateProgress();
           } else {
-            updateProgress(true);
+            updateProgress(true); // إلى 100%
             renderResult();
           }
         };
@@ -197,6 +247,7 @@
         updateProgress();
       }
 
+      /* شريط التقدّم: 0% عند أول سؤال، 100% عند الأخير */
       function updateProgress(forceDone=false){
         const bar = document.getElementById('bar');
         if(!bar) return;
@@ -205,6 +256,7 @@
         bar.style.width = pct + '%';
       }
 
+      /* واجهة النتيجة + وصف + مشاركة */
       function renderResult(){
         const score = picks.reduce((acc, v, i)=> acc + (v===questions[i].answer ? 1 : 0), 0);
         const percent = Math.round((score / questions.length) * 100);
@@ -243,7 +295,7 @@ ${pageURL}`;
           <hr class="hr">
 
           <div class="desc">شارك نتيجتك وتحدّى أصدقائك… من يعرف أرقام الوطن أكثر؟</div>
-          <div class="share-row" style="margin-top:8px;">
+          <div class="share-row" style="margin-top:6px;">
             <a class="btn" href="${wa}" target="_blank" rel="noopener">واتساب</a>
             <a class="btn" href="${tg}" target="_blank" rel="noopener">تليجرام</a>
           </div>
@@ -251,14 +303,16 @@ ${pageURL}`;
         document.getElementById('again').onclick = renderWelcome;
       }
 
+      // ابدأ بواجهة الاسم
       renderWelcome();
     })();
   </script>
 
   <script>
+    /* ===================== عداد الزوار عبر Cloudflare Worker ===================== */
     (function(){
       const el = document.getElementById('visitorCount');
-      const WORKER_URL = 'https://sn95-visitor.alharbi-rawiah.workers.dev/';
+      const WORKER_URL = 'https://sn95-visitor.alharbi-rawiah.workers.dev/'; /* غيّريه لو اسمك مختلف */
       const setText = v => el.textContent = 'عدد الزوار: ' + v;
 
       fetch(WORKER_URL, {cache:'no-store', mode:'cors', referrerPolicy:'no-referrer'})
