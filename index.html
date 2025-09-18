@@ -108,9 +108,10 @@
       fetch(`https://api.countapi.xyz/hit/${NS}/${KEY}`)
         .then(r => r.json())
         .then(d => el.textContent = 'عدد الزوار: ' + d.value)
-        .catch(() => el.textContent = 'عدد الزوار: —');
+        .catch(() => el.textContent = 'عدد الزوار:');
     })();
   </script>
 </body>
 </html>
+
 
