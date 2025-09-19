@@ -167,6 +167,12 @@
 
       const shuffle = (arr)=> arr.map(a=>[Math.random(),a]).sort((a,b)=>a[0]-b[0]).map(a=>a[1]);
 
+      /* تنظيف الاسم: قصّ، إزالة محارف غير لازمة، تحديد الطول */
+      function cleanName(s){
+        try { return (s ?? '').trim().replace(/[^\p{L}\p{N}\s\-_]/gu,'').slice(0,40); }
+        catch { return (s ?? '').trim().replace(/[<>\/\\]/g,'').slice(0,40); }
+      }
+
       function initQuiz(){
         questions = shuffle(baseQuestions).map(q=>({ ...q, options: shuffle([q.answer, ...q.distractors]) }));
         index = 0; picks = new Array(questions.length).fill(null);
@@ -177,17 +183,21 @@
         app.innerHTML = `
           <div class="title">اختبر نفسك في أرقام اليوم الوطني</div>
           <br>
-          <input id="nameInput" class="input" type="text" placeholder="اسمك هنا" />
+          <input id="nameInput" class="input" type="text" placeholder="اسمك هنا"
+                 maxlength="40" autocomplete="off" inputmode="text" />
           <button id="startBtn" class="btn">ابدأ الاختبار</button>
         `;
         const nameInput = document.getElementById('nameInput');
         const startBtn  = document.getElementById('startBtn');
-        startBtn.onclick = ()=>{
-          userName = (nameInput.value||'').trim();
+
+        const start = ()=>{
+          userName = cleanName(nameInput.value);
           if(!userName){ nameInput.focus(); return; }
           initQuiz(); renderQuestion(); updateProgress();
         };
-        nameInput.addEventListener('keydown', e=>{ if(e.key==='Enter') startBtn.click(); });
+
+        startBtn.onclick = start;
+        nameInput.addEventListener('keydown', e=>{ if(e.key==='Enter') start(); });
       }
 
       /* واجهة السؤال */
@@ -257,7 +267,7 @@
         bar.style.width = pct + '%';
       }
 
-      /* واجهة النتيجة + وصف + مشاركة */
+      /* واجهة النتيجة + وصف + مشاركة (آمنة) */
       function renderResult(){
         const score = picks.reduce((acc, v, i)=> acc + (v===questions[i].answer ? 1 : 0), 0);
         const percent = Math.round((score / questions.length) * 100);
@@ -273,21 +283,15 @@
           desc = '⚠️ راجع نفسك! وطنك يستحق أن تعرف تاريخه ومنجزاته بالأرقام 💚';
         }
 
-        const shareMsg =
-`أنا ${userName || 'المستخدم'} حققت ${percent}% 
-في اختبار أرقام اليوم الوطني 
-
-جاهز تتحداني؟ 
-جرّب بنفسك وشاركني نتيجتك:
-${pageURL}`;
-
-        const wa = `https://wa.me/?text=${encodeURIComponent(shareMsg)}`;
-        const tg = `https://t.me/share/url?url=${encodeURIComponent(pageURL)}&text=${encodeURIComponent(shareMsg)}`;
+        const safeName = userName || 'المستخدم';
+        const shareMsg = `أنا ${safeName} حققت ${percent}% في اختبار أرقام اليوم الوطني\n${pageURL}`;
+        const wa = 'https://wa.me/?text=' + encodeURIComponent(shareMsg);
+        const tg = 'https://t.me/share/url?url=' + encodeURIComponent(pageURL) + '&text=' + encodeURIComponent(shareMsg);
 
         app.innerHTML = `
           <div class="title">النتيجة</div>
-          <div class="score">${userName || 'المستخدم'}<br>حققت: ${percent}%</div>
-          <div class="desc">${desc}</div>
+          <div class="score"><span id="resName"></span><br>حققت: <span id="resPct"></span></div>
+          <div class="desc" id="resDesc"></div>
 
           <div class="share-row" style="margin-top:8px;">
             <button id="again" class="btn">إعادة الاختبار</button>
@@ -297,10 +301,20 @@ ${pageURL}`;
 
           <div class="desc">شارك نتيجتك وتحدّى أصدقائك… من يعرف أرقام الوطن أكثر؟</div>
           <div class="share-row" style="margin-top:6px;">
-            <a class="btn" href="${wa}" target="_blank" rel="noopener">واتساب</a>
-            <a class="btn" href="${tg}" target="_blank" rel="noopener">تليجرام</a>
+            <a class="btn" id="waBtn" target="_blank" rel="noopener">واتساب</a>
+            <a class="btn" id="tgBtn" target="_blank" rel="noopener">تليجرام</a>
           </div>
         `;
+
+        // إدخال النصوص بشكل آمن
+        document.getElementById('resName').textContent = safeName;
+        document.getElementById('resPct').textContent  = percent + '%';
+        document.getElementById('resDesc').textContent = desc;
+
+        // ضبط الروابط بعد الترميز
+        document.getElementById('waBtn').href = wa;
+        document.getElementById('tgBtn').href = tg;
+
         document.getElementById('again').onclick = renderWelcome;
       }
 
@@ -318,13 +332,12 @@ ${pageURL}`;
 
       fetch(WORKER_URL, {cache:'no-store', mode:'cors', referrerPolicy:'no-referrer'})
         .then(r => { if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
-        .then(d => setText(d.value))
+        .then(d => {
+          const n = Number.parseInt(String(d.value), 10);
+          setText(Number.isFinite(n) && n >= 0 ? n : '—');
+        })
         .catch(() => setText('—'));
     })();
   </script>
 </body>
 </html>
-
-
-
-
