@@ -285,7 +285,7 @@
 
         const safeName = userName || 'المستخدم';
         const shareMsg =
-               `أنا ${safeName} حققت ${percent}% في اختبار أرقام اليوم الوطني\n` +
+               `أنا ${safeName} حققت ${percent}%\n في اختبار أرقام اليوم الوطني\n\n` +
                `جاهز تتحداني؟\nجرّب بنفسك وشاركني نتيجتك:\n${pageURL}`;
         const wa = 'https://wa.me/?text=' + encodeURIComponent(shareMsg);
         const tg = 'https://t.me/share/url?url=' + encodeURIComponent(pageURL) + '&text=' + encodeURIComponent(shareMsg);
@@ -343,6 +343,7 @@
   </script>
 </body>
 </html>
+
 
 
 
