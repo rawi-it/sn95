@@ -284,7 +284,9 @@
         }
 
         const safeName = userName || 'المستخدم';
-        const shareMsg = `أنا ${safeName} حققت ${percent}% في اختبار أرقام اليوم الوطني\n${pageURL}`;
+        const shareMsg =
+               `أنا ${safeName} حققت ${percent}% في اختبار أرقام اليوم الوطني\n` +
+               `جاهز تتحداني؟\nجرّب بنفسك وشاركني نتيجتك:\n${pageURL}`;
         const wa = 'https://wa.me/?text=' + encodeURIComponent(shareMsg);
         const tg = 'https://t.me/share/url?url=' + encodeURIComponent(pageURL) + '&text=' + encodeURIComponent(shareMsg);
 
@@ -293,8 +295,9 @@
           <div class="score"><span id="resName"></span><br>حققت: <span id="resPct"></span></div>
           <div class="desc" id="resDesc"></div>
 
+          <div class="desc">جاهز تتحداني؟<br>جرّب بنفسك وشاركني نتيجتك:</div>
           <div class="share-row" style="margin-top:8px;">
-            <button id="again" class="btn">إعادة الاختبار</button>
+          <button id="again" class="btn">إعادة الاختبار</button>
           </div>
 
           <hr class="hr">
@@ -341,5 +344,6 @@
   </script>
 </body>
 </html>
+
 
 
